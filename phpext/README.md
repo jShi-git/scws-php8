@@ -22,7 +22,68 @@ $Id$
 安装
 -----
 
-这是一个 php 扩展，除 windows 上的 php_scws.dll 外只提供源代码，需要自行下载并编译，具体参见[这里][2]。
+这是一个 PHP 扩展（`.so` / `.dll`），需要在目标机器上使用对应 PHP 版本的 `phpize/php-config` 编译。
+
+本仓库为 **PHP 8 兼容版本**，建议使用 **built-in** 方式把 `libscws` 源码一并编入扩展（无需系统提前安装 libscws）。
+
+### 方式 A：built-in（推荐）
+
+> 注意：本仓库 `libscws/` 位于项目根目录。构建前需复制到 `phpext/libscws`（`config.m4` 的 built-in 分支会用到）。
+
+```bash
+cd phpext
+rm -rf libscws
+cp -R ../libscws ./libscws
+
+phpize
+./configure --with-scws=built-in
+make -j"$(nproc)"
+sudo make install
+```
+
+启用扩展（写入对应 PHP 的 `php.ini` 或 `conf.d/scws.ini`）：
+
+```ini
+extension=scws.so
+```
+
+验证：
+
+```bash
+php -m | grep -i scws
+php -r 'echo scws_version(), PHP_EOL;'
+```
+
+### 方式 B：链接系统已安装的 libscws（可选）
+
+如果你已安装 scws 库（包含头文件与 lib），可使用：
+
+```bash
+phpize
+./configure --with-scws=/usr/local
+make -j"$(nproc)"
+sudo make install
+```
+
+## 宝塔（BT）PHP 8.2 编译示例
+
+宝塔环境请用它自带的 `phpize/php-config` 来编译，否则 ABI 不匹配。
+
+```bash
+cd /www/server/source/scws-php8/phpext
+rm -rf libscws && cp -R ../libscws ./libscws
+
+/www/server/php/82/bin/phpize
+./configure --with-php-config=/www/server/php/82/bin/php-config --with-scws=built-in
+make -j"$(nproc)"
+cp -f modules/scws.so /www/server/php/82/lib/php/extensions/no-debug-non-zts-20220829/
+```
+
+然后在 `/www/server/php/82/etc/php.ini`（或对应 conf.d）加入：
+
+```ini
+extension=scws.so
+```
 
 
 运行时配置
