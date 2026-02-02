@@ -310,8 +310,9 @@ print_r($top);
 其它
 ------
 
-本说明由 hightman 首次编写于 2007/06/07，最近于 2013/01/07 更新。
+本说明由 hightman 首次编写于 2007/06/07，最近于 2026/02/02 更新 By stuart.shi。
 
 
 [1]: http://www.xunsearch.com/scws/
 [2]: https://github.com/hightman/scws/blob/master/README.md
+[3]: https://github.com/jShi-git/scws-php8/blob/main/README.md
