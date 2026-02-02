@@ -1,5 +1,9 @@
 # scws-php8
 
+![phpinfo 示例](images/phpinfo.png)
+
+![phpinfo 示例](images/test.png)
+
 基于 [`hightman/scws`](https://github.com/hightman/scws) 的 **PHP 扩展兼容分支**，目标是让 `scws` 能在 **PHP 8.0/8.1/8.2（及更高版本）** 上正常编译、加载和运行。
 
 ## 改动要点（相对上游）
