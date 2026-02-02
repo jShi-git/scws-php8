@@ -28,12 +28,10 @@ $Id$
 
 ### 方式 A：built-in（推荐）
 
-> 注意：本仓库 `libscws/` 位于项目根目录。构建前需复制到 `phpext/libscws`（`config.m4` 的 built-in 分支会用到）。
+> 注意：本仓库 `libscws/` 位于 `phpext/libscws`（`config.m4` 的 built-in 分支会用到）。
 
 ```bash
 cd phpext
-rm -rf libscws
-cp -R ../libscws ./libscws
 
 phpize
 ./configure --with-scws=built-in
@@ -71,7 +69,6 @@ sudo make install
 
 ```bash
 cd /www/server/source/scws-php8/phpext
-rm -rf libscws && cp -R ../libscws ./libscws
 
 /www/server/php/82/bin/phpize
 ./configure --with-php-config=/www/server/php/82/bin/php-config --with-scws=built-in

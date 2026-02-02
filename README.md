@@ -22,9 +22,7 @@
 ```bash
 cd scws-php8/phpext
 
-# 关键：本仓库 libscws/ 在项目根目录，built-in 构建时需要它位于 phpext/libscws
-rm -rf libscws
-cp -R ../libscws ./libscws
+# 关键：本仓库 libscws/ 在 phpext/libscws
 
 phpize
 ./configure --with-scws=built-in
@@ -59,7 +57,6 @@ php -r 'echo scws_version(), PHP_EOL;'
 
 ```bash
 cd /www/server/source/scws-php8/phpext
-rm -rf libscws && cp -R ../libscws ./libscws
 
 /www/server/php/82/bin/phpize
 ./configure --with-php-config=/www/server/php/82/bin/php-config --with-scws=built-in
