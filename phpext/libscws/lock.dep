@@ -1,0 +1,2 @@
+libscws/lock.lo: /Users/stuart/sites/minepro/scws/phpext/libscws/lock.c \
+  config.h /Users/stuart/sites/minepro/scws/phpext/libscws/lock.h
