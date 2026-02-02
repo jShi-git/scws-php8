@@ -76,7 +76,12 @@ typedef int str_size_t;
 static zend_class_entry *scws_class_entry_ptr;
 static int le_scws;
 
-#define PHP_SCWS_MODULE_VERSION		"0.2.4"
+/*
+ * Fork identification:
+ * - Keep upstream numeric version for compatibility recognition.
+ * - Add a suffix so phpinfo() can clearly show this is the PHP8-compatible fork.
+ */
+#define PHP_SCWS_MODULE_VERSION		"0.2.4-php8"
 #define	PHP_SCWS_DEFAULT_CHARSET	"gbk"
 #define	PHP_SCWS_OBJECT_TAG			"scws handler"
 #define	DELREF_SCWS(x)	{	\
@@ -319,7 +324,7 @@ PHP_MINFO_FUNCTION(scws)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "SCWS support", "Enabled");
-	php_info_print_table_row(2, "SCWS Description", "Simple Chinese Words Segmentation");
+	php_info_print_table_row(2, "SCWS Description", "Simple Chinese Words Segmentation (scws-php8 fork / PHP 8 compatible)");
 	php_info_print_table_row(2, "PECL Module version", PHP_SCWS_MODULE_VERSION);
 	php_info_print_table_row(2, "SCWS Library", SCWS_VERSION);
 	php_info_print_table_row(2, "SCWS BugReport", SCWS_BUGREPORT);

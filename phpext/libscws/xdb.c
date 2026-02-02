@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <errno.h>
 
 #ifdef HAVE_FLOCK
 #   include <sys/file.h>
@@ -45,6 +46,37 @@ static int _xdb_hasher(xdb_t x, const char *s, int len)
 	return (h % x->prime);
 }
 
+static int _xdb_read_fully(int fd, void *buf, size_t len)
+{
+	size_t off = 0;
+	while (off < len) {
+		ssize_t n = read(fd, (char *)buf + off, len - off);
+		if (n == 0) {
+			return -1; /* EOF */
+		}
+		if (n < 0) {
+			if (errno == EINTR) continue;
+			return -1;
+		}
+		off += (size_t)n;
+	}
+	return 0;
+}
+
+static int _xdb_write_fully(int fd, const void *buf, size_t len)
+{
+	size_t off = 0;
+	while (off < len) {
+		ssize_t n = write(fd, (const char *)buf + off, len - off);
+		if (n < 0) {
+			if (errno == EINTR) continue;
+			return -1;
+		}
+		off += (size_t)n;
+	}
+	return 0;
+}
+
 static void _xdb_read_data(xdb_t x, void *buf, unsigned int off, int len)
 {
 	/* check off & x->fsize? */
@@ -57,8 +89,16 @@ static void _xdb_read_data(xdb_t x, void *buf, unsigned int off, int len)
 
 	if (x->fd >= 0)
 	{
-		lseek(x->fd, off, SEEK_SET);
-		read(x->fd, buf, len);
+		if (lseek(x->fd, (off_t)off, SEEK_SET) == (off_t)-1) {
+			/* best effort: zero fill on failure */
+			memset(buf, 0, (size_t)len);
+			return;
+		}
+		if (_xdb_read_fully(x->fd, buf, (size_t)len) != 0) {
+			/* best effort: avoid returning uninitialized memory */
+			memset(buf, 0, (size_t)len);
+			return;
+		}
 	}
 	else
 	{
@@ -230,7 +270,14 @@ xdb_t xdb_create(const char *fpath, int base, int prime)
 
 	/* check the XDB header: XDB+version(1bytes)+base+prime+fsize+<dobule check> = 19bytes */
 	lseek(x->fd, 0, SEEK_SET);
-	write(x->fd, &xhdr, sizeof(xhdr));
+	if (_xdb_write_fully(x->fd, &xhdr, sizeof(xhdr)) != 0) {
+#ifdef DEBUG
+		perror("Failed to write XDB header");
+#endif
+		close(x->fd);
+		free(x);
+		return NULL;
+	}
 	return x;
 }
 
@@ -252,7 +299,7 @@ void xdb_close(xdb_t x)
 		if (x->mode == 'w')
 		{		
 			lseek(x->fd, 12, SEEK_SET);
-			write(x->fd, &x->fsize, sizeof(x->fsize));
+			(void)_xdb_write_fully(x->fd, &x->fsize, sizeof(x->fsize));
 			_xdb_flock(x->fd, LOCK_UN);
 		}
 		close(x->fd);
@@ -307,13 +354,13 @@ void xdb_nput(xdb_t x, void *value, unsigned int vlen, const char *key, int len)
 		if (vlen > 0)
 		{		
 			lseek(x->fd, rec.value.off, SEEK_SET);
-			write(x->fd, value, vlen);
+			(void)_xdb_write_fully(x->fd, value, vlen);
 		}
 		if (vlen < rec.value.len)
 		{
 			vlen += rec.me.len - rec.value.len;
 			lseek(x->fd, rec.poff + 4, SEEK_SET);
-			write(x->fd, &vlen, sizeof(vlen));
+			(void)_xdb_write_fully(x->fd, &vlen, sizeof(vlen));
 		}
 	}
 	else if (vlen > 0)
@@ -336,14 +383,14 @@ void xdb_nput(xdb_t x, void *value, unsigned int vlen, const char *key, int len)
 			pnew.len = 17 + len;
 		}
 		lseek(x->fd, pnew.off, SEEK_SET);
-		write(x->fd, buf, pnew.len);
-		write(x->fd, value, vlen);
+		(void)_xdb_write_fully(x->fd, buf, pnew.len);
+		(void)_xdb_write_fully(x->fd, value, vlen);
 		pnew.len += vlen;
 		x->fsize += pnew.len;
 
 		/* update noff & vlen -> poff */
 		lseek(x->fd, rec.poff, SEEK_SET);
-		write(x->fd, &pnew, sizeof(pnew));
+		(void)_xdb_write_fully(x->fd, &pnew, sizeof(pnew));
 	}
 }
 
@@ -528,7 +575,7 @@ static void _xdb_reset_nodes(xdb_t x, xcmper_st *nodes, int low, int high, unsig
 
 	/* save it */
 	lseek(x->fd, poff, SEEK_SET);
-	write(x->fd, &ptr, sizeof(xptr_st));
+	(void)_xdb_write_fully(x->fd, &ptr, sizeof(xptr_st));
 }
 
 static int _xdb_node_cmp(a, b)

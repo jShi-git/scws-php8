@@ -70,6 +70,23 @@ if test "$PHP_SCWS" != "no"; then
     
     dnl # check unix header files
     AC_CHECK_HEADERS([ sys/file.h sys/time.h unistd.h string.h fcntl.h ],, [ AC_MSG_ERROR(scws: some header file not found) ])
+
+    dnl # lock support (fix "no proper flock supported" warning on Linux)
+    dnl check for flock(2)
+    AC_CHECK_FUNCS([flock])
+    dnl check for struct flock (fcntl locking)
+    AC_CACHE_CHECK([for struct flock], [ac_cv_struct_flock], [
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <unistd.h>
+#include <fcntl.h>
+      ]], [[
+struct flock x;
+(void)x;
+      ]])], [ac_cv_struct_flock=yes], [ac_cv_struct_flock=no])
+    ])
+    if test "$ac_cv_struct_flock" = "yes"; then
+      AC_DEFINE([HAVE_STRUCT_FLOCK], [1], [whether you have struct flock])
+    fi
   fi
 fi
 
