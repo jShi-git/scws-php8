@@ -57,7 +57,8 @@ if test "$PHP_SCWS" != "no"; then
     
     libscws_src="libscws/charset.c libscws/darray.c \
 		 libscws/pool.c libscws/rule.c \
-		 libscws/scws.c libscws/xdb.c libscws/lock.c\
+		 libscws/scws.c libscws/xdb.c libscws/lock.c \
+		 libscws/crc32.c \
 		 libscws/xdict.c libscws/xtree.c"
 		 
     dnl # check -lm (math lib)
