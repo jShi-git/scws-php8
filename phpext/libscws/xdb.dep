@@ -1,5 +1,0 @@
-libscws/xdb.lo: /Users/stuart/sites/minepro/scws/phpext/libscws/xdb.c \
-  config.h /Users/stuart/sites/minepro/scws/phpext/libscws/xdb.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/xtree.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/pool.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/lock.h

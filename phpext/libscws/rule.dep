@@ -1,4 +1,0 @@
-libscws/rule.lo: /Users/stuart/sites/minepro/scws/phpext/libscws/rule.c \
-  config.h /Users/stuart/sites/minepro/scws/phpext/libscws/rule.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/xtree.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/pool.h

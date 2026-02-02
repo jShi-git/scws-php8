@@ -1,4 +1,0 @@
-.lo: /Users/stuart/sites/minepro/scws/phpext/../libscws/xtree.c config.h \
-  /Users/stuart/sites/minepro/scws/phpext/../libscws/xtree.h \
-  /Users/stuart/sites/minepro/scws/phpext/../libscws/pool.h \
-  /Users/stuart/sites/minepro/scws/phpext/../libscws/xdb.h

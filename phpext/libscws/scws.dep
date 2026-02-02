@@ -1,9 +1,0 @@
-libscws/scws.lo: /Users/stuart/sites/minepro/scws/phpext/libscws/scws.c \
-  config.h /Users/stuart/sites/minepro/scws/phpext/libscws/scws.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/version.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/rule.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/xtree.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/pool.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/xdict.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/charset.h \
-  /Users/stuart/sites/minepro/scws/phpext/libscws/darray.h
