@@ -6,6 +6,8 @@
 
 基于 [`hightman/scws`](https://github.com/hightman/scws) 的 **PHP 扩展兼容分支**，目标是让 `scws` 能在 **PHP 8.0/8.1/8.2（及更高版本）** 上正常编译、加载和运行。
 
+```借助AI工具，调整修改并测试运行```
+
 ## 改动总结（相对 [hightman/scws](https://github.com/hightman/scws)）
 
 本分支（scws-php8）由 **jShi-git** 维护，在保留原作者 hightman 编程规范与注释风格（如 `/// hightman.YYMMDD: 说明`）的前提下，做如下核心改动，以便在 PHP 8.0/8.1/8.2 及更高版本上编译、加载并正常运行。
