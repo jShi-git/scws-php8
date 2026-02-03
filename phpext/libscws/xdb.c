@@ -46,6 +46,7 @@ static int _xdb_hasher(xdb_t x, const char *s, int len)
 	return (h % x->prime);
 }
 
+/* /// jShi-git.260202: read/write wrappers for -Wunused-result and EINTR */
 static int _xdb_read_fully(int fd, void *buf, size_t len)
 {
 	size_t off = 0;

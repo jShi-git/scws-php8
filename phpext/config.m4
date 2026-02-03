@@ -55,6 +55,7 @@ if test "$PHP_SCWS" != "no"; then
     dnl   cp -R ../libscws ./libscws
     PHP_SCWS_CFLAGS="-I@ext_srcdir@ -I@ext_srcdir@/libscws"
     
+    dnl /// jShi-git.260202: add libscws/crc32.c so scws.so exports scws_crc32
     libscws_src="libscws/charset.c libscws/darray.c \
 		 libscws/pool.c libscws/rule.c \
 		 libscws/scws.c libscws/xdb.c libscws/lock.c \
@@ -72,6 +73,7 @@ if test "$PHP_SCWS" != "no"; then
     dnl # check unix header files
     AC_CHECK_HEADERS([ sys/file.h sys/time.h unistd.h string.h fcntl.h ],, [ AC_MSG_ERROR(scws: some header file not found) ])
 
+    dnl /// jShi-git.260202: Linux flock / struct flock for lock.c
     dnl # lock support (fix "no proper flock supported" warning on Linux)
     dnl check for flock(2)
     AC_CHECK_FUNCS([flock])

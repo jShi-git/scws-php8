@@ -81,6 +81,7 @@ static int le_scws;
  * - Keep upstream numeric version for compatibility recognition.
  * - Add a suffix so phpinfo() can clearly show this is the PHP8-compatible fork.
  */
+/// jShi-git.260202: module version suffix for phpinfo
 #define PHP_SCWS_MODULE_VERSION		"0.2.4-php8"
 #define	PHP_SCWS_DEFAULT_CHARSET	"gbk"
 #define	PHP_SCWS_OBJECT_TAG			"scws handler"
@@ -133,6 +134,7 @@ if (ps->s->r == NULL || ps->s->d == NULL) {	\
 }
 
 #if PHP_MAJOR_VERSION >= 7
+/// jShi-git.260202: SimpleCWS handle via zend_read_property (PHP 8.2 dynamic property)
 #define	SCWS_FETCH_PARAMETERS(ts, ...)	\
 	do {	\
 		zval *obj = getThis();	\
@@ -193,6 +195,7 @@ struct php_scws
 #endif
 };
 
+/// jShi-git.260202: PHP8 arginfo from scws.stub.php
 #if PHP_MAJOR_VERSION >= 8
 #include "scws_arginfo.h"
 #else
@@ -320,6 +323,7 @@ PHP_RSHUTDOWN_FUNCTION(scws)
 	return SUCCESS;
 }
 
+/// jShi-git.260202: phpinfo description for scws-php8 fork
 PHP_MINFO_FUNCTION(scws)
 {
 	php_info_print_table_start();
@@ -384,6 +388,7 @@ PHP_FUNCTION(scws_new)
 
 	object_init_ex(return_value, scws_class_entry_ptr);
 #if PHP_MAJOR_VERSION >= 7
+	/// jShi-git.260202: set SimpleCWS::handle via zend_update_property
 	{
 		zval handle_zv;
 		ZVAL_RES(&handle_zv, ps->rsrc_id);

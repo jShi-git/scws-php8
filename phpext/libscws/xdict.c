@@ -120,6 +120,7 @@ static xdict_t _xdict_open_txt(const char *fpath, int mode, unsigned char *ml)
 #ifdef WIN32
 	_realpath(fpath, buf);
 #else
+	/// jShi-git.260202: check realpath return to fix -Wunused-result
 	if (_realpath(fpath, buf) == NULL)
 		return NULL;
 #endif
@@ -203,6 +204,7 @@ static xdict_t _xdict_open_txt(const char *fpath, int mode, unsigned char *ml)
 				if (!(part = _strtok_r(NULL, delim, &last))) break;
 				word.idf = (float) atof(part);
 
+				/// jShi-git.260202: parentheses for assignment in conditional (-Wparentheses)
 				if ((part = _strtok_r(NULL, delim, &last)))
 				{
 					word.attr[0] = part[0];

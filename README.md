@@ -6,11 +6,21 @@
 
 基于 [`hightman/scws`](https://github.com/hightman/scws) 的 **PHP 扩展兼容分支**，目标是让 `scws` 能在 **PHP 8.0/8.1/8.2（及更高版本）** 上正常编译、加载和运行。
 
-## 改动要点（相对上游）
+## 改动总结（相对 [hightman/scws](https://github.com/hightman/scws)）
 
-- **PHP 8 统一使用 stub/arginfo**：`phpext/scws.stub.php` + `phpext/scws_arginfo.h`。
-- **兼容 PHP 8.2 动态属性弃用**：`SimpleCWS::$handle` 按 stub 声明属性处理，扩展侧用 `zend_read_property / zend_update_property` 读写 `handle`，避免 PHP 8.2 的 deprecated 与兼容性问题。
-- **修复部分旧式 zval 用法**：减少 PHP7/8 下潜在的内存/生命周期风险。
+本分支（scws-php8）由 **jShi-git** 维护，在保留原作者 hightman 编程规范与注释风格（如 `/// hightman.YYMMDD: 说明`）的前提下，做如下核心改动，以便在 PHP 8.0/8.1/8.2 及更高版本上编译、加载并正常运行。
+
+| 类别 | 说明 |
+|------|------|
+| **PHP 8 函数/类声明** | PHP 8 统一使用 stub + arginfo：`phpext/scws.stub.php`、`phpext/scws_arginfo.h`；`#if PHP_MAJOR_VERSION >= 8` 时引入 arginfo 并采用 `register_class_SimpleCWS()` 注册类。 |
+| **PHP 8.2 动态属性** | `SimpleCWS::$handle` 在 stub 中声明为属性；扩展侧用 `zend_read_property` / `zend_update_property` 读写 `handle`，避免 PHP 8.2 对未声明动态属性的弃用与兼容性问题。 |
+| **zval 用法** | PHP 7+ 下 `scws_get_result` / `scws_get_tops` / `scws_get_words` 使用栈上 `zval row` + `array_init(&row)` + `add_next_index_zval(return_value, &row)`，不再使用已废弃的 `MAKE_STD_ZVAL`。 |
+| **TSRMLS 宏** | PHP 8 无 TSRMLS_*，在 `php_scws.c` 中通过 `#ifndef TSRMLS_C` 统一定义为空，保证旧宏调用仍可编译。 |
+| **phpinfo 与版本** | 模块版本号改为 `0.2.4-php8`；phpinfo 中 “SCWS Description” 为 “Simple Chinese Words Segmentation (scws-php8 fork / PHP 8 compatible)”，便于区分本分支。 |
+| **built-in 编译（config.m4）** | `--with-scws=built-in` 时：将 `libscws/crc32.c` 加入编译列表，避免运行时 `undefined symbol: scws_crc32`；增加对 `flock` 与 `struct flock` 的检测并定义 `HAVE_STRUCT_FLOCK`，消除 Linux 下 “no proper flock supported” 的 #warning。 |
+| **libscws 告警与健壮性** | `xdb.c`：增加 `_xdb_read_fully` / `_xdb_write_fully`，对 `read`/`write` 做完整与返回值检查，消除 -Wunused-result 并处理 EINTR。`xdict.c`：对 `realpath` 返回值做检查；修正 “assignment in conditional” 的括号以消除 -Wparentheses 告警。 |
+
+源码中新增修改均以 `/// jShi-git.260202: 简短说明` 形式标注（260202 表示 2026-02-02），与上游 `/// hightman.070706: char token` 等风格一致。
 
 ## 构建与安装（通用 Linux / Ubuntu）
 
